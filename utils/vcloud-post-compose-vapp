@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'erb'
+require 'fog'
+require 'pp'
+require 'vcloud'
+
+ENV['FOG_MOCK'] && Fog.mock!
+
+fsi = Vcloud::FogServiceInterface.new()
+
+vdc_id = ARGV.shift
+name   = ARGV.shift
+
+pp fsi.post_compose_vapp(vdc_id, name)

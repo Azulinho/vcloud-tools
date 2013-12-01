@@ -47,6 +47,16 @@ module Vcloud
       @vcloud.get_current_session.body
     end
 
+    def post_compose_vapp(vdc_id, name, params={})
+      unless @vcloud.methods.include?(:post_compose_vapp)
+        raise 'Not supported in underlying Fog version' 
+      end
+      Vcloud.logger.info("Composing #{name} vApp in vDC '#{vdc_id}'")
+      vapp = @vcloud.post_compose_vapp(vdc_id, name, params).body
+      @vcloud.process_task(vapp[:Tasks][:Task])
+      @vcloud.get_vapp(extract_id(vapp)).body
+    end
+
     def post_instantiate_vapp_template(vdc, template, name, params)
       Vcloud.logger.info("instantiating #{name} vapp in #{vdc[:name]}")
       vapp = @vcloud.post_instantiate_vapp_template(extract_id(vdc), template, name, params).body
