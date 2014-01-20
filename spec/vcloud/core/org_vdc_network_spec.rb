@@ -78,22 +78,11 @@ module Vcloud
             }
           end
 
-          it "should fail if :name is not set" do
-            @config.delete(:name)
-            expect { Vcloud::Core::OrgVdcNetwork.provision(@config) }.
-              to raise_exception(RuntimeError)
-          end
-
-          it "should fail if :vdc_name is not set" do
-            @config.delete(:vdc_name)
-            expect { Vcloud::Core::OrgVdcNetwork.provision(@config) }.
-              to raise_exception(RuntimeError)
-          end
-
-          it "should fail if :fence_mode is not set" do
-            @config.delete(:fence_mode)
-            expect { Vcloud::Core::OrgVdcNetwork.provision(@config) }.
-              to raise_exception(RuntimeError)
+          [:name, :vdc_name, :fence_mode].each do |missing_field|
+            it "should fail if #{missing_field} is not set" do
+              @config.delete(missing_field.to_sym)
+              expect { Vcloud::Core::OrgVdcNetwork.provision(@config) }.to raise_exception(RuntimeError)
+            end
           end
 
           it "should fail if :fence_mode is not 'isolated' or 'natRouted'" do
